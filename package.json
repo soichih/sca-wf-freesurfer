@@ -1,0 +1,14 @@
+{
+  "name": "sca-wf-freesurfer",
+  "version": "1.0.0",
+  "description": "Upload your Nifti and runs freesurfer to generate mgz",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Soichi Hayashis <hayashis@iu.edu>",
+  "license": "ISC",
+  "sca": {
+    "label": "Freesurfer Workflow"
+  }
+}

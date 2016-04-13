@@ -1,0 +1,129 @@
+<!--<sca-menutab menu="appconf.menu" active="'recon'" user="user"></sca-menutab>-->
+<bread instid="instid" breads="appconf.breads" active="'process'"></bread>
+<div class="container">
+    <h3>SCA Freesurfer Workflow</h3>
+
+    <!--
+    <div class="page">
+        <p class="pull-right help-block">Created at {{instance.create_date|date}}</p>
+        <h4>Instance Info</h4>
+        <p class="text-muted">A information about this workflow instance.</p>
+        <div class="form-group">
+            <label for="desc">Name</label>
+            <input type="text" class="form-control" ng-model="instance.name" required placeholder="Enter name for this workflow instance."></input>
+            <label for="desc">Description</label>
+            <textarea class="form-control" ng-model="instance.desc" placeholder="Enter a description for this workflow instance."></textarea>
+        </div>
+    </div>
+    <br>
+    -->
+
+    <div class="page">
+        <form name="recon" ng-submit="submit()" class="form-horizontal">
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Input Nifti Files</label>
+                <div class="col-sm-10">
+                    <!--<p class="text-muted">Specify Nifti files that you'd like to process through Freesurfer</p>-->
+                    <!--<p ng-if="!inputs" class="help-block">No Nifti Input Selected / Uploaded</p>-->
+                    <ul class="list-group">
+                        <li class="list-group-item" ng-repeat="input in inputs">
+                            <input type="checkbox" ng-model="input.checked"> {{input.filename}} <span class="pull-right">{{input.size|bytes}}</span>
+                        </li>
+                        <li class="list-group-item clickable" ng-click="addinput();" style="background-color: #f0f0f0;">
+                            Add Input
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <!--
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" ng-model="form.all">(-all) Run all the steps in the FreeSurfer processing stream.
+                </label>
+            </div>
+            -->
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Process to Run</label>
+                <div class="col-sm-10">
+                    <select class="form-control" ng-model="form.process">
+                        <option value="recon">Recon All</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label"></label>
+                <div class="col-sm-10">
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" ng-model="form.hipposubfields">-hippo-subfields
+                        </label>
+                    </div>
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" ng-model="form.todo1">-todo1
+                        </label>
+                    </div>
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" ng-model="form.todo2">-todo2
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <!--
+            <div class="form-group">
+                <label for="subject">Subject Name</label>
+                <input type="text" class="form-control" ng-model="form.subject" placeholder="Enter subject name">
+            </div>
+            -->
+            <!--
+            <div class="form-group">
+                <label for="subject">Input Files</label>
+                <ui-select multiple ng-model="form.inputs">
+                    <ui-select-match placeholder="Select Input Nifti ..."><i class="fa fa-file"></i> {{$item.filename}}</ui-select-match>
+                    <ui-select-choices group-by-dis="'task_id'" repeat="input in inputs | propsFilter: {filename: $select.search}">
+                        <small>
+                            {{input.filename}}
+                        </small>
+                    </ui-select-choices>
+                </ui-select>
+            </div>
+            -->
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <div class="pull-right">
+                        <!--<button type="button" class="btn" ng-click="back()">Back</button>-->
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!--
+    <h3>Running Jobs</h3>
+    <div class="page">
+        <ul class="list-group">
+            <li class="list-group-item slide-down job" ng-repeat="task in tasks | orderBy:'-update_date'" 
+                ng-if="task.status != 'finished' && task.status != 'failed'"
+                style="background: linear-gradient(to right, #eee {{task.progress.progress*100}}%, white {{task.progress.progress*100}}%);">
+                <ng-include src="'t/task.html'"></ng-include>
+            </li>
+        </ul>
+    </div>
+
+    -->
+
+    <div ng-if="tasks.length > 0">
+        <h3>Previously Submitted</h3>
+        <div class="page">
+            <ul class="list-group">
+                <li class="list-group-item slide-down clickable" ng-repeat="task in tasks | orderBy:'-update_date'" ng-click="open(task)">
+                    <ng-include src="'t/oldtask.html'"></ng-include>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+</div>
+

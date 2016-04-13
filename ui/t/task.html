@@ -1,0 +1,63 @@
+<!--<sca-menutab menu="appconf.menu" active="'recon'" user="user"></sca-menutab>-->
+<bread instid="instid" breads="appconf.breads" active="'process'"></bread>
+<div class="container">
+    <h3>SCA Freesurfer Workflow</h3>
+    <div class="page">
+        <!-- link to the progress service-->
+        <a href="{{appconf.progress_url}}{{task.progress_key}}" 
+            target="{{task.progress_key}}" 
+            ng-if="progress" 
+            class="pull-right"><b>{{progress.progress*100|number:1}}%</b></a>
+
+        <h4>
+            <i class="fa fa-spinner fa-pulse" ng-if="task.status == 'running'"></i> 
+            {{progress.msg || (task.status|uppercase)}}
+        </h4>
+
+        <!--<time class="pull-right help-block">Updated at {{task.update_date|date:'medium'}}</time>-->
+        <!--<time class="pull-right">{{task.create_date|date:'medium'}}</time>-->
+        <!--
+        <button ng-if="task.resource_id" type="button" class="btn btn-xs pull-right" ng-click="open(task)"><i class="fa fa-cloud-download"></i></button>
+        -->
+        <!--
+        <b>Input Files:</b>
+        <p>
+            <span ng-repeat="file in task.config.files" style="padding-right: 10px;"><i class="fa fa-file-o"></i> {{file.filename}}</span>
+        </p>
+
+        <b>Options</b>
+        <p>
+            
+            <span class="label label-default" ng-if="task.config.all">-all</span>
+            <span class="label label-default" ng-if="task.config.hipposubfields">-hippo-subfields</span>
+        </p>
+        -->
+        <p class="alert alert-warning">TODO.. format info</p>
+        <div ng-if="progress">
+            <label>Progress</label>
+            <pre style="font-size: 70%;">{{progress|json}}</pre>
+        </div>
+        <label>Task</label>
+        <pre style="font-size: 70%;">{{task|json}}</pre>
+
+        <hr>
+        <div class="pull-right">
+            <button type="button" class="btn" ng-click="back()">Back</button>
+            <button type="button" class="btn btn-danger" ng-click="stop()" 
+                ng-if="task.status == 'running'"><i class="fa fa-stop" aria-hidden="true"></i> Stop
+            </button>
+            <button type="button" class="btn btn-warning" ng-click="rerun()" 
+                ng-if="task.status == 'failed' || task.status == 'finished' || task.status == 'stopped'">
+                <i class="fa fa-repeat" aria-hidden="true"></i> Rerun
+            </button>
+        </div>
+        <br clear="both">
+    </div>
+    <br>
+
+    <div class="page">
+        <h4>Output Files</h4>
+        <p ng-if="task.status != 'finished'" class="text-muted">Maybe incomplete until the job is finished.</p>
+        <sca-files resourceid="task.resource_id" path="path" jwt="jwt"></sca-files>
+    </div>
+</div>

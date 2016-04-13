@@ -1,0 +1,20 @@
+<!--<sca-menutab menu="appconf.menu" active="'start'" user="user"></sca-menutab>-->
+<bread instid="instid" breads="appconf.breads" active="'start'"></bread>
+<div class="container">
+    <h3>SCA Freesurfer Workflow</h3>
+    <div class="page">
+        <p>This workflow allows you upload Nifti images and run Freesurfer neuroimaging processes.</p>
+        
+        <form ng-submit="submit()">
+            <div class="form-group">
+                <label for="desc">Description</label>
+                <textarea class="form-control" ng-model="instance.config.description" placeholder="Enter a description for this workflow instance."></textarea> 
+            </div>
+            <div class="pull-right">
+                <button type="submit" class="btn btn-primary"><i class="fa fa-arrow-right"></i> Next</button>
+            </div>
+        </form>
+        <br clear="both">
+    </div>
+</div>
+
