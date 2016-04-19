@@ -1,6 +1,6 @@
 angular.module('app.config', [])
 .constant('appconf', {
-    api: '/api/sca-wf-freesurfer',
+    //api: '/api/sca-wf-freesurfer',
 
     //shared servive api and ui urls (for menus and stuff)
     shared_api: '/api/shared',
@@ -11,9 +11,9 @@ angular.module('app.config', [])
     auth_url: '/auth',
 
     sca_api: '/api/sca',
-    sca_url: '/sca',
+    //sca_url: '/sca',
 
-    upload_api: '/api/upload',
+    //upload_api: '/api/upload',
 
     progress_api: '/api/progress',
     progress_url: '/progress',
