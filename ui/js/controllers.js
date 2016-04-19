@@ -1,20 +1,26 @@
 'use strict';
 
-app.controller('PageController', ['$scope', 'appconf', '$route', 'toaster', '$http', 'jwtHelper', 'menu', '$window', '$anchorScroll', 
-function($scope, appconf, $route, toaster, $http, jwtHelper, menu, $window, $anchorScroll) {
+app.controller('PageController', ['$scope', 'appconf', '$route', 'toaster', '$http', 'jwtHelper', 'menu', '$window', '$anchorScroll', '$routeParams',
+function($scope, appconf, $route, toaster, $http, jwtHelper, menu, $window, $anchorScroll, $routeParams) {
     $scope.appconf = appconf;
     $scope.title = appconf.title;
     $scope.menu = menu;
     var jwt = localStorage.getItem($scope.appconf.jwt_id);
-    if(jwt) {
-        $scope.user = jwtHelper.decodeToken(jwt);
+    if(jwt) { $scope.user = jwtHelper.decodeToken(jwt); }
+
+    //this is a crap..
+    $scope.reset_urls = function($routeParams) {
+        appconf.breads.forEach(function(item) {
+            item.url = "#/"+item.id+"/"+$routeParams.instid;
+        });
     }
 }]);
 
 app.controller('StartController', ['$scope', 'toaster', '$http', 'jwtHelper', 'scaMessage', 'instance', '$routeParams', '$location',
 function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, $location) {
-    scaMessage.show(toaster);
-    $location.path("/process/"+$routeParams.instid);
+    //scaMessage.show(toaster);
+    $location.path("/process/"+$routeParams.instid).replace();
+    //$scope.reset_urls($routeParams);
     /*
     instance.load($routeParams.instid).then(function(_instance) { 
         $scope.instance = _instance; 
@@ -37,44 +43,35 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
 app.controller('UploadController', ['$scope', 'toaster', '$http', 'jwtHelper', 'scaMessage', 'instance', '$routeParams', '$location', 
 function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, $location) {
     scaMessage.show(toaster);
+    $scope.reset_urls($routeParams);
 
-    $scope.back = function() {
-        //$location.path($scope.instance._id+"/start");
-        $location.path("/start/"+$routeParams.instid);
-    }
+    $scope.back = function() { $location.path("/start/"+$routeParams.instid); }
+    /*
     $scope.$on("file_uploaded", function() {
         console.log("file_uploaded");
         $scope.changed = true;
     });
+    */
     
     $scope.next = function() {
-        if($scope.changed) {
-            $location.path("/import");
-        } else {
-            $location.path("/process");
-        }
+        if($scope.changed)  $location.path("/import");
+        else $location.path("/process");
     }
 }]);
 
 app.controller('ImportController', ['$scope', 'toaster', '$http', 'jwtHelper', 'scaMessage', 'instance', '$routeParams', '$location', '$timeout', 
 function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, $location, $timeout) {
     scaMessage.show(toaster);
+    $scope.reset_urls($routeParams);
 
     instance.load($routeParams.instid).then(function(_instance) { 
         $scope.instance = _instance; 
     });
 
-    /*
-    $http.get($scope.appconf.sca_api+"/task/byid/"+$routeParams.taskid)
-    .then(function(res) {
-        $scope.task = res.data;
-    }, function(res) {
-        if(res.data && res.data.message) toaster.error(res.data.message);
-        else toaster.error(res.statusText);
-    });
-    */
-    load_progress();
+    $scope.taskid = $routeParams.taskid;
 
+    /*
+    load_progress();
     var t_load_progress = null;
     function load_progress() {
         $http.get($scope.appconf.progress_api+"/status/"+$routeParams.progresskey, {params: {
@@ -100,6 +97,10 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
             t_load_progress = null;
         }
     });
+    */
+    $scope.$on('task_finished', function(event, task) {
+        $location.path("/process/"+$routeParams.instid);
+    });
     $scope.back = function() {
         $location.path("/input/"+$routeParams.instid);
     }
@@ -108,22 +109,18 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
 app.controller('ProcessController', ['$scope', 'toaster', '$http', 'jwtHelper', 'scaMessage', 'instance', '$routeParams', '$location', '$interval',
 function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, $location, $interval) {
     scaMessage.show(toaster);
+    $scope.reset_urls($routeParams);
 
-    /*
-    $scope.input_task = null; //task used as input
-    $scope.inputs = []; //available inputs
-    */
     $scope.form = {
         process: "recon", 
     }
-    //$scope.tasks = []; //running and previously submitted tasks
 
     instance.load($routeParams.instid).then(function(_instance) { 
         $scope.instance = _instance; 
     });
 
     //find the latest successful nifti data products
-    $http.get($scope.appconf.sca_api+"/task/query", {params: {
+    $http.get($scope.appconf.sca_api+"/task", {params: {
         //find one with nifti output
         where: {
             instance_id: $routeParams.instid,
@@ -135,29 +132,22 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
         limit: 1,
     }})
     .then(function(res) {
-        /*
-        if(!res.data.length) toaster.error("No Nifti data products found. Please import first.");
-        else {
+        if(res.data[0]) {
             $scope.input_task = res.data[0];
             $scope.inputs = $scope.input_task.products.files;
-            //select all by default
+
+            //check all (TODO - if input hasn't changed, I should restore user selection)
             $scope.inputs.forEach(function(file) {
-                $scope.form.inputs.push(file);
+                file.checked = true;
             });
-        } 
-        */
-        $scope.input_task = res.data[0];
-        $scope.inputs = $scope.input_task.products.files;
-        $scope.inputs.forEach(function(file) {
-            file.checked = true;
-        });
+        }
     }, function(res) {
         if(res.data && res.data.message) toaster.error(res.data.message);
         else toaster.error(res.statusText);
     });
 
     //load previously submitted tasks
-    $http.get($scope.appconf.sca_api+"/task/query", {params: {
+    $http.get($scope.appconf.sca_api+"/task", {params: {
         //find one with nifti output
         where: {
             instance_id: $routeParams.instid,
@@ -166,90 +156,31 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
     }})
     .then(function(res) {
         $scope.tasks = res.data;
-        /*
-        $scope.tasks.forEach(function(task) {
-            if(task.status == "running") {
-                load_progress(task); 
-            }
-        });
-        */
     }, function(res) {
         if(res.data && res.data.message) toaster.error(res.data.message);
         else toaster.error(res.statusText);
     });
 
-    /*
-    function load_task(task) {
-        $http.get($scope.appconf.sca_api+"/task/byid/"+task._id)
-        .then(function(res) {
-            console.log("task "+task._id+" updated");
-            console.dir(res.data);
-            for(var k in res.data) {
-                task[k] = res.data[k];
-            }
-            //if(task.status == "running") {
-                //still running.. load progress
-                load_progress(task);
-            //}
-            if(task.status == "finished") {
-                console.log("task finished.. removing progress");
-                delete task.progress;
-            }
-        }, function(res) {
-            if(res.data && res.data.message) toaster.error(res.data.message);
-            else toaster.error(res.statusText);
-        });
-    }
-
-    function load_progress(task) {
-        $http.get($scope.appconf.progress_api+"/status/"+task.progress_key, {params: {
-            //depth: 2,
-        }})
-        .then(function(res) {
-            console.log("progress info for task "+task._id+" updated");
-            console.dir(res.data);
-            task.progress = res.data;
-        }, function(res) {
-            if(res.data && res.data.message) toaster.error(res.data.message);
-            else toaster.error(res.statusText);
-        });
-    }
-
-
-    $scope.back = function() {
-        $location.path($routeParams.instid+"/upload");
-    }
-    */
     $scope.open = function(task) {
         $location.path("/task/"+$routeParams.instid+"/"+task._id);
     }
     $scope.submit = function() {
-
-        $scope.form.input_task_id = $scope.input_task._id;
+        $scope.instance.config.input_task_id = $scope.input_task._id;
         
         //list input files checked
-        $scope.form.files = [];
+        $scope.instance.config.files = [];
         $scope.inputs.forEach(function(input) {
-            if(input.checked) $scope.form.files.push(input);
+            if(input.checked) $scope.instance.config.files.push(input);
         });
-        $scope.form.files.forEach(function(file) { delete file.checked });
+        $scope.instance.config.files.forEach(function(file) { delete file.checked });
         
         //submit freesurfer
         $http.post($scope.appconf.sca_api+"/task", {
             instance_id: $scope.instance._id,
             service_id: "sca-service-freesurfer",
-            /*
-            config: { 
-                input_task_id: $scope.input_task._id, //latest nifti import task
-                files: inputs,
-                all: $scope.form.all,
-                hipposubfields: $scope.form.hipposubfields,
-            },
-            */
-            config: $scope.form,
+            config: $scope.instance.config,
         })
         .then(function(res) {
-            //$scope.tasks.push(res.data.task);
             $location.path("/task/"+$routeParams.instid+"/"+res.data.task._id);
         }, function(res) {
             if(res.data && res.data.message) toaster.error(res.data.message);
@@ -260,11 +191,25 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
     $scope.addinput = function() {
         $location.path("/input/"+$routeParams.instid);
     }
+
+    $scope.editingheader = false;
+    $scope.editheader = function() {
+        $scope.editingheader = true;
+    }
+    $scope.updateheader = function() {
+        instance.save($scope.instance).then(function(_instance) { 
+            $scope.editingheader = false;
+        }, function(res) {
+            if(res.data && res.data.message) toaster.error(res.data.message);
+            else toaster.error(res.statusText);
+        });
+    }
 }]);
 
 app.controller('InputController', ['$scope', 'toaster', '$http', 'jwtHelper', 'scaMessage', 'instance', '$routeParams', '$location',
 function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, $location) {
     scaMessage.show(toaster);
+    $scope.reset_urls($routeParams);
     instance.load($routeParams.instid).then(function(_instance) { 
         $scope.instance = _instance; 
     });
@@ -272,13 +217,12 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
         $location.path("/process/"+$routeParams.instid);
     }
     $scope.fromurl = function(url) {
-
-        //submit curl service
+        //first submit download service
         $http.post($scope.appconf.sca_api+"/task", {
             instance_id: $scope.instance._id,
-            service_id: "sca-service-curl", 
+            service_id: "sca-service-download", 
             config: { 
-                urls: [url],
+                download: [{dir:"download", url:url}],
             }
         })
         .then(function(res) {
@@ -294,7 +238,8 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
                 deps: [curl_task._id],
             })
             .then(function(res) {
-                $location.path("/import/"+$routeParams.instid+"/"+res.data.task.progress_key);
+                //$location.path("/import/"+$routeParams.instid+"/"+res.data.task.progress_key);
+                $location.path("/import/"+$routeParams.instid+"/"+res.data.task._id);
             }, function(res) {
                 if(res.data && res.data.message) toaster.error(res.data.message);
                 else toaster.error(res.statusText);
@@ -315,9 +260,7 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
             }
         })
         .then(function(res) {
-            //$scope.progress_key = res.data.task.progress_key;
-            //$location.path("/import/"+$routeParams.instid+"/"+res.data.task._id);
-            $location.path("/import/"+$routeParams.instid+"/"+res.data.task.progress_key);
+            $location.path("/import/"+$routeParams.instid+"/"+res.data.task._id);
         }, function(res) {
             if(res.data && res.data.message) toaster.error(res.data.message);
             else toaster.error(res.statusText);
@@ -325,73 +268,19 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
     }
 }]);
 
-app.controller('TaskController', ['$scope', 'toaster', '$http', 'jwtHelper', 'scaMessage', 'instance', '$routeParams', '$location', '$timeout', 
-function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, $location, $timeout) {
+app.controller('TaskController', ['$scope', 'toaster', '$http', 'jwtHelper', 'scaMessage', 'instance', '$routeParams', '$location',
+function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, $location) {
     scaMessage.show(toaster);
-    $scope.taskid = $routeParams.taskid; 
-    $scope.path = $routeParams.instid+"/"+$scope.taskid; //path to open by default
-
-    //for file service
+    $scope.reset_urls($routeParams);
+    /*
+    instance.load($routeParams.instid).then(function(_instance) { 
+        $scope.instance = _instance; 
+    });
+    */
+    $scope.taskid = $routeParams.taskid;
     $scope.jwt = localStorage.getItem($scope.appconf.jwt_id);
-
-    load();
-
-    var tm = null;
-    function load() {
-        $http.get($scope.appconf.sca_api+"/task/byid/"+$scope.taskid)
-        .then(function(res) {
-            $scope.task = res.data;
-            $scope.resource_id = $scope.task.resource_id;
-
-            //load new task status unless it's finished/failed
-            if($scope.task.status != "finished" && $scope.task.status != "failed" && $scope.task.status != "stopped") {
-                tm = $timeout(load, 3*1000); //reload in 3 seconds
-            }
-
-            //load progress info
-            $http.get($scope.appconf.progress_api+"/status/"+$scope.task.progress_key, {params: { depth: 2, }})
-            .then(function(res) {
-                $scope.progress = res.data;
-            }, function(res) {
-                if(res.data && res.data.message) toaster.error(res.data.message);
-                else toaster.error(res.statusText);
-            });
-
-        }, function(res) {
-            if(res.data && res.data.message) toaster.error(res.data.message);
-            else toaster.error(res.statusText);
-        });
-    }
-
+    
     $scope.back = function() {
         $location.path("/process/"+$routeParams.instid);
     }
-
-    $scope.stop = function() {
-        $http.put($scope.appconf.sca_api+"/task/stop/"+$scope.task._id)
-        .then(function(res) {
-            toaster.success("Requested to stop this task");
-        }, function(res) {
-            if(res.data && res.data.message) toaster.error(res.data.message);
-            else toaster.error(res.statusText);
-        });
-    }
-
-    $scope.rerun = function() {
-        $http.put($scope.appconf.sca_api+"/task/rerun/"+$scope.task._id)
-        .then(function(res) {
-            toaster.success("Requested to rerun this task");
-            load();
-        }, function(res) {
-            if(res.data && res.data.message) toaster.error(res.data.message);
-            else toaster.error(res.statusText);
-        });
-    }
-
-    //setup task refresher
-    $scope.$on("$locationChangeSuccess", function() {
-        if(tm) $timeout.cancel(tm);
-    });
-
 }]);
-

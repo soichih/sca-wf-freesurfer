@@ -1,7 +1,7 @@
 <div class="row">
     <div class="col-md-8">
         <h5>
-            <i class="fa fa-spinner fa-pulse" ng-if="task.progress.status == 'running'"></i> {{task.progress.msg || (task.status|uppercase)}}
+            <i class="fa fa-spinner fa-pulse" ng-if="task.status == 'running'"></i> {{task.status|uppercase}}
             <small>{{task._id}}</small>
         </h5>
         <!--<time class="pull-right">{{task.create_date|date:'medium'}}</time>-->
@@ -19,11 +19,13 @@
         </p>
     </div>
     <div class="col-md-4">
+        <!--
         <a href="{{appconf.progress_url}}{{task.progress_key}}" 
             target="{{task.progress_key}}" 
             ng-if="task.progress">
             <b>{{task.progress.progress*100|number:1}}%</b>
         </a>
+        -->
         <time>Updated at {{task.update_date|date:'medium'}}</time>
     </div>
 </div>

@@ -12,6 +12,7 @@ var app = angular.module('app', [
     'ui.bootstrap.tabs',
     'ui.select',
     'sca-shared',
+    'sca-wf',
     'ui.gravatar',
     'angular.filter',
     'sca-uploader',
@@ -40,7 +41,7 @@ app.animation('.slide-down', ['$animateCss', function($animateCss) {
 app.config(['$routeProvider', 'appconf', function($routeProvider, appconf) {
     $routeProvider
     .when('/start/:instid', {
-        templateUrl: 't/start.html',
+        template: '',
         controller: 'StartController',
         requireslogin: true
     })
@@ -54,7 +55,7 @@ app.config(['$routeProvider', 'appconf', function($routeProvider, appconf) {
         controller: 'InputController',
         requireslogin: true
     })
-    .when('/import/:instid/:progresskey', {
+    .when('/import/:instid/:taskid', {
         templateUrl: 't/import.html',
         controller: 'ImportController',
         requireslogin: true
@@ -120,6 +121,7 @@ function(appconf, $httpProvider, jwtInterceptorProvider) {
     $httpProvider.interceptors.push('jwtInterceptor');
 }]);
 
+/*
 //just a service to load all users from auth service
 app.factory('serverconf', ['appconf', '$http', 'jwtHelper', function(appconf, $http, jwtHelper) {
     return $http.get(appconf.api+'/config')
@@ -127,6 +129,7 @@ app.factory('serverconf', ['appconf', '$http', 'jwtHelper', function(appconf, $h
         return res.data;
     });
 }]);
+*/
 
 app.factory('instance', ['appconf', '$http', 'jwtHelper', 'toaster', 
 function(appconf, $http, jwtHelper, toaster) {
@@ -135,8 +138,6 @@ function(appconf, $http, jwtHelper, toaster) {
         load: function(instid) {
             return $http.get(appconf.sca_api+'/instance/'+instid)
             .then(function(res) {
-                //console.log("loaded instance");
-                //console.dir(res.data);
                 _instance = res.data;
                 return res.data;
             }, function(res) {
@@ -145,8 +146,7 @@ function(appconf, $http, jwtHelper, toaster) {
             });
         },
         save: function(instance) {
-            //console.dir(instance);
-            return $http.put(appconf.sca_api+'/instance/'+instance._id, instance.config);
+            return $http.put(appconf.sca_api+'/instance/'+instance._id, instance);
         },
         get: function() {
             return _instance;
@@ -282,6 +282,7 @@ app.directive('uiSelectRequired', function() {
   };
 });
 
+/*
 app.directive('bread', function() {
     return {
         templateUrl: 't/bread.html',
@@ -298,4 +299,4 @@ app.directive('bread', function() {
         },
     }
 });
-
+*/

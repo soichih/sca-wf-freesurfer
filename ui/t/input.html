@@ -1,5 +1,5 @@
 <!--<sca-menutab menu="appconf.menu" active="'recon'" user="user"></sca-menutab>-->
-<bread instid="instid" breads="appconf.breads" active="'addinput'"></bread>
+<sca-breadcrumb breads="appconf.breads" active="'input'"></sca-breadcrumb>
 <div class="container">
     <h3>Add Input</h3>
 
@@ -17,46 +17,61 @@
                 </tab>
                 <tab index="1" heading="From URL">
                     <br>
-                    <div class="form-group">
-                        <label for="subject">URL</label>
-                        <input type="text" class="form-control" ng-model="url" placeholder="http://somewhere.com/somepath/some.nifti">
-                    </div>
-                    <div class="pull-right">
-                        <button type="button" class="btn" ng-click="back()">Back</button>
-                        <button type="button" class="btn btn-primary" ng-click="fromurl(url)">Next</button>
-                    </div>
+                    <form ng-submit="fromurl(url)">
+                        <div class="form-group">
+                            <label for="subject">URL</label>
+                            <input type="text" class="form-control" ng-model="url" placeholder="http://somewhere.com/somepath/some.nifti" required>
+                            <p class="help-block">Sample URL: https://dl.dropboxusercontent.com/u/3209692/permanent/10142_3_MPRAGE_online.nii</p>
+                        </div>
+                        <div class="pull-right">
+                            <button type="button" class="btn" ng-click="back()">Back</button>
+                            <button type="submit" class="btn btn-primary">Next</button>
+                        </div>
+                    </form>
                 </tab>
                 <tab index="1" heading="From DC2">
                     <br>
-                    <p class="alert alert-warning">TODO</p>
-                    <div class="form-group">
-                        <label for="subject">URL</label>
-                        <input type="text" class="form-control" ng-model="path" placeholder="/N/dc2/hayashis/somedir/some.nifti">
-                    </div>
-                    <div class="pull-right">
-                        <button type="button" class="btn" ng-click="back()">Back</button>
-                        <button type="button" class="btn btn-primary" ng-click="fromdc2()">Next</button>
-                    </div>
+                    <form ng-submit="fromdc2(path)">
+                        <p class="alert alert-warning">TODO</p>
+                        <div class="form-group">
+                            <label for="subject">URL</label>
+                            <input type="text" class="form-control" ng-model="path" placeholder="/N/dc2/hayashis/somedir/some.nifti" required>
+                        </div>
+                        <div class="pull-right">
+                            <button type="button" class="btn" ng-click="back()">Back</button>
+                            <button type="submit" class="btn btn-primary">Next</button>
+                        </div>
+                    </form>
                 </tab>
                 <tab index="1" heading="From SDA">
                     <br>
-                    <p class="alert alert-warning">TODO</p>
-                    <div class="form-group">
-                        <label for="subject">URL</label>
-                        <input type="text" class="form-control" ng-model="path" placeholder="mysda/somedir/some.nifti">
-                    </div>
-                    <div class="pull-right">
-                        <button type="button" class="btn" ng-click="back()">Back</button>
-                        <button type="button" class="btn btn-primary" ng-click="fromsda()">Next</button>
-                    </div>
+                    <form ng-submit="fromsda(path)">
+                        <p class="alert alert-warning">TODO</p>
+                        <div class="form-group">
+                            <label for="subject">URL</label>
+                            <input type="text" class="form-control" ng-model="path" placeholder="mysda/somedir/some.nifti" required>
+                        </div>
+                        <div class="pull-right">
+                            <button type="button" class="btn" ng-click="back()">Back</button>
+                            <button type="button" class="btn btn-primary">Next</button>
+                        </div>
+                    </form>
                 </tab>
                 <tab index="1" heading="From SCA Workflow">
                     <br>
-                    <p class="alert alert-warning">TODO</p>
-                    <div class="pull-right">
-                        <button type="button" class="btn" ng-click="back()">Back</button>
-                        <button type="button" class="btn btn-primary" ng-click="fromsca()">Next</button>
-                    </div>
+                    <form ng-submit="fromsca(instid, taskid)">
+                        <p class="alert alert-warning">TODO</p>
+                        <div class="form-group">
+                            <label>instid</label>
+                            <input type="text" class="form-control" ng-model="instid" placeholder="instid" required>
+                            <label>taskid</label>
+                            <input type="text" class="form-control" ng-model="taskid" placeholder="taskid" required>
+                        </div>
+                        <div class="pull-right">
+                            <button type="button" class="btn" ng-click="back()">Back</button>
+                            <button type="submit" class="btn btn-primary">Next</button>
+                        </div>
+                    </form>
                 </tab>
             </tabset>
             <br clear="both">

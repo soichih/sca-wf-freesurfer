@@ -11,22 +11,24 @@ angular.module('app.config', [])
     auth_url: '/auth',
 
     sca_api: '/api/sca',
+    sca_url: '/sca',
+
     upload_api: '/api/upload',
 
     progress_api: '/api/progress',
-    progress_url: '/progress#/detail/',
+    progress_url: '/progress',
 
     jwt_id: 'jwt',
     input_task_id: '_input',
 
     breads: [
-        {id: "workflows", label: "Workflows", url:"/sca/#/workflows" },
+        //{id: "workflows", label: "Workflows", url:"/sca/#/workflows" },
         /*
         {id: "start", label: "Start", url: "#/:instid/start" },
         {id: "upload", label: "Upload / Import", url: "#/:instid/upload" },
         */
-        {id: "process", label: "Freesurfer", url: "#/:instid/process" },
-        {id: "addinput", label: "Add Input", url: "#/:instid/addinput" },
+        {id: "process", label: "Freesurfer", url: "tdb" },
+        {id: "input", label: "Add Input", url: "tdb" },
     ]
     /*
     menu: [

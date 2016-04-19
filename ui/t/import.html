@@ -1,8 +1,9 @@
-<!--<sca-menutab menu="appconf.menu" active="'upload'" user="user"></sca-menutab>-->
-<bread instid="instid" breads="appconf.breads" active="'upload'"></bread>
+<sca-breadcrumb breads="appconf.breads" active="'input'"></sca-breadcrumb>
 <div class="container">
     <h3>Importing Nifti</h3>
     <div class="page">
+
+        <!--
         <p>
             <i ng-if="progress.status != 'finished'" class="fa fa-spinner fa-pulse"></i>
             {{progress.msg}}
@@ -12,10 +13,26 @@
             <p>Please try refreshing this page, or contact SCA team if the problem persits.</p>
             <pre>{{progress|json}}</pre>
         </div>
+        <p class="alert alert-warning">TODO.. format info</p>
+        <div class="row">
+            <div class="col-md-6">
+                <label>Task</label>
+                <pre style="font-size: 70%;">{{task|json}}</pre>
+            </div>
+            <div class="col-md-6">
+                <div ng-if="progress">
+                    <label>Progress</label>
+                    <pre style="font-size: 70%;">{{progress|json}}</pre>
+                </div>
+            </div>
+        </div>
+        -->
 
+        <p>Importing data... please wait.</p>
+        <sca-wf-taskdeps taskid="taskid" conf="appconf"></sca-wf-taskdeps>
+        
         <div class="pull-right">
-            <button type="button" class="btn" ng-click="back()">back</button>
-            <!--<button type="button" class="btn btn-primary" ng-click="next()" ng-disabled="progress.status != 'finished'">Next</button>-->
+            <button type="button" class="btn" ng-click="back('input')">back</button>
         </div>
         <br clear="both">
     </div>
