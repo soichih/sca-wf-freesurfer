@@ -19,7 +19,7 @@ angular.module('app.config', [])
     progress_url: '/progress',
 
     jwt_id: 'jwt',
-    input_task_id: '_input',
+    upload_task_id: '_upload',
 
     breads: [
         //{id: "workflows", label: "Workflows", url:"/sca/#/workflows" },

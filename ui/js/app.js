@@ -15,8 +15,7 @@ var app = angular.module('app', [
     'sca-wf',
     'ui.gravatar',
     'angular.filter',
-    'sca-uploader',
-    'sca-files',
+    'sca-product-raw',
     'sca-product-nifti',
 ]);
 

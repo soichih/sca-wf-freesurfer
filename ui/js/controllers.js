@@ -70,34 +70,6 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
 
     $scope.taskid = $routeParams.taskid;
 
-    /*
-    load_progress();
-    var t_load_progress = null;
-    function load_progress() {
-        $http.get($scope.appconf.progress_api+"/status/"+$routeParams.progresskey, {params: {
-            depth: 2,
-        }})
-        .then(function(res) {
-            $scope.progress = res.data;
-            if($scope.progress.status != "finished" || $scope.progress.status != "failed") {
-                t_load_progress = $timeout(load_progress, 3000); //TODO make it smarter..
-            }
-            if($scope.progress.status == "finished") {
-                toaster.success("Nifti files imported successfully");
-                $location.path("/process/"+$routeParams.instid);
-            }
-        }, function(res) {
-            if(res.data && res.data.message) toaster.error(res.data.message);
-            else toaster.error(res.statusText);
-        });
-    }
-    $scope.$on("$locationChangeSuccess", function() {
-        if(t_load_progress) {
-            $timeout.cancel(t_load_progress);
-            t_load_progress = null;
-        }
-    });
-    */
     $scope.$on('task_finished', function(event, task) {
         $location.path("/process/"+$routeParams.instid);
     });
@@ -111,9 +83,11 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
     scaMessage.show(toaster);
     $scope.reset_urls($routeParams);
 
+    /*
     $scope.form = {
         process: "recon", 
     }
+    */
 
     instance.load($routeParams.instid).then(function(_instance) { 
         $scope.instance = _instance; 
@@ -192,7 +166,7 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
         $location.path("/input/"+$routeParams.instid);
     }
 
-    $scope.editingheader = false;
+    //$scope.editingheader = false;
     $scope.editheader = function() {
         $scope.editingheader = true;
     }
@@ -220,7 +194,7 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
         //first submit download service
         $http.post($scope.appconf.sca_api+"/task", {
             instance_id: $scope.instance._id,
-            service_id: "sca-service-download", 
+            service_id: "sca-product-raw", 
             config: { 
                 download: [{dir:"download", url:url}],
             }
@@ -251,12 +225,33 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
         });
     }
 
+    $scope.fromsda = function(path) {
+        $http.post($scope.appconf.sca_api+"/task", {
+            instance_id: $scope.instance._id,
+            service_id: "sca-service-hpss",
+            config: {
+                get: [{localdir:"download", hpsspath:path}],
+                auth: {
+                    //TODO - let user pick this
+                    username: "hayashis",
+                    keytab: "5682f80ae8a834a636dee418.keytab",
+                }
+            },
+        })
+        .then(function(res) {
+            $location.path("/import/"+$routeParams.instid+"/"+res.data.task._id);
+        }, function(res) {
+            if(res.data && res.data.message) toaster.error(res.data.message);
+            else toaster.error(res.statusText);
+        });
+    }
+
     $scope.doneupload = function() {
         $http.post($scope.appconf.sca_api+"/task", {
             instance_id: $scope.instance._id,
             service_id: "sca-product-nifti", //invoke product-nifti's importer
             config: { 
-                source_dir: $scope.appconf.input_task_id,
+                source_dir: $scope.appconf.upload_task_id,
             }
         })
         .then(function(res) {

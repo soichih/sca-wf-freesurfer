@@ -9,7 +9,7 @@
                 <tab index="0" heading="Upload">
                     <br>
                     <p>Please upload .nii files you'd like to process.</p>
-                    <sca-uploader instid="instance._id" taskid="appconf.input_task_id" files="files"></sca-uploader>
+                    <sca-wf-uploader instid="instance._id" taskid="appconf.upload_task_id" files="files"></sca-wf-uploader>
                     <div class="pull-right">
                         <button type="button" class="btn" ng-click="back()">Back</button>
                         <button type="button" class="btn btn-primary" ng-click="doneupload(files)" ng-if="files.length > 0">Next</button>
@@ -29,6 +29,20 @@
                         </div>
                     </form>
                 </tab>
+                <tab index="1" heading="From SDA">
+                    <br>
+                    <form ng-submit="fromsda(path)">
+                        <div class="form-group">
+                            <label for="subject">URL</label>
+                            <input type="text" class="form-control" ng-model="path" placeholder="mysda/somedir/some.nifti" required>
+                            <p class="help-block">e.g. test/10142_3_MPRAGE_online.nii</p>
+                        </div>
+                        <div class="pull-right">
+                            <button type="button" class="btn" ng-click="back()">Back</button>
+                            <button type="submit" class="btn btn-primary">Next</button>
+                        </div>
+                    </form>
+                </tab>
                 <tab index="1" heading="From DC2">
                     <br>
                     <form ng-submit="fromdc2(path)">
@@ -40,20 +54,6 @@
                         <div class="pull-right">
                             <button type="button" class="btn" ng-click="back()">Back</button>
                             <button type="submit" class="btn btn-primary">Next</button>
-                        </div>
-                    </form>
-                </tab>
-                <tab index="1" heading="From SDA">
-                    <br>
-                    <form ng-submit="fromsda(path)">
-                        <p class="alert alert-warning">TODO</p>
-                        <div class="form-group">
-                            <label for="subject">URL</label>
-                            <input type="text" class="form-control" ng-model="path" placeholder="mysda/somedir/some.nifti" required>
-                        </div>
-                        <div class="pull-right">
-                            <button type="button" class="btn" ng-click="back()">Back</button>
-                            <button type="button" class="btn btn-primary">Next</button>
                         </div>
                     </form>
                 </tab>
