@@ -14,12 +14,26 @@
             </button>
         </div>
         -->
-        <button type="button" class="btn" ng-click="back()">Back</button>
+        <hr>
+        <button type="button" class="btn pull-right" ng-click="back()">Back</button>
+        <br clear="both">
     </div>
 
     <h3>Output Files</h3>
     <div class="page">
-        <!--<p ng-if="task.status != 'finished'" class="text-muted">Maybe incomplete until the job is finished.</p>-->
-        <sca-product-raw conf="appconf" taskid="taskid" path="path" jwt="jwt"></sca-product-raw>
+        <uib-tabset active="active">
+            <uib-tab index="0" heading="Files">
+                <br>
+                <sca-product-raw conf="appconf" taskid="taskid" path="path" jwt="jwt"></sca-product-raw>
+            </uib-tab>
+            <uib-tab index="1" heading="Freesurfer Output">
+                <br>
+                <p class="alert alert-warning">TODO</p>
+                <!--
+                <p ng-if="!task.products" class="text-muted">Output graphs not yet generated</p>
+                <sca-product-lifeout conf="appconf" task="task" path="path" jwt="jwt"></sca-product-lifeout>
+                -->
+            </uib-tab>
+        </uib-tabset>
     </div>
 </div>

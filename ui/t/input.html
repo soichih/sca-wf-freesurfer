@@ -5,8 +5,8 @@
 
     <div class="page">
         <div class="form-group">
-            <tabset>
-                <tab heading="Upload">
+            <uib-tabset>
+                <uib-tab heading="Upload">
                     <br>
                     <p>Please upload .nii files you'd like to process.</p>
                     <sca-wf-uploader instid="instance._id" taskid="appconf.upload_task_id" files="files"></sca-wf-uploader>
@@ -14,8 +14,8 @@
                         <button type="button" class="btn" ng-click="back()">Back</button>
                         <button type="button" class="btn btn-primary" ng-click="doneupload(files)" ng-if="files.length > 0">Next</button>
                     </div>
-                </tab>
-                <tab heading="From URL">
+                </uib-tab>
+                <uib-tab heading="From URL">
                     <br>
                     <form ng-submit="fromurl(url)">
                         <div class="form-group">
@@ -28,8 +28,8 @@
                             <button type="submit" class="btn btn-primary">Next</button>
                         </div>
                     </form>
-                </tab>
-                <tab heading="From SDA">
+                </uib-tab>
+                <uib-tab heading="From SDA">
                     <br>
                     <p class="alert alert-warning" ng-if="hpss_resources.length == 0">You don't have any HPSS resource registered</p>
                     <div ng-if="hpss_resources.length > 0">
@@ -57,8 +57,8 @@
                             </div>
                         </form>
                     </div>
-                </tab>
-                <tab heading="From DC2">
+                </uib-tab>
+                <uib-tab heading="From DC2">
                     <br>
                     <form ng-submit="fromdc2(path)">
                         <p class="alert alert-warning">TODO</p>
@@ -71,8 +71,8 @@
                             <button type="submit" class="btn btn-primary">Next</button>
                         </div>
                     </form>
-                </tab>
-                <tab heading="From SCA Workflow">
+                </uib-tab>
+                <uib-tab heading="From SCA Workflow">
                     <br>
                     <form ng-submit="fromsca(instid, taskid)">
                         <p class="alert alert-warning">TODO</p>
@@ -87,8 +87,8 @@
                             <button type="submit" class="btn btn-primary">Next</button>
                         </div>
                     </form>
-                </tab>
-            </tabset>
+                </uib-tab>
+            </uib-tabset>
             <br clear="both">
         </div>
     </div>
