@@ -42,27 +42,27 @@ app.config(['$routeProvider', 'appconf', function($routeProvider, appconf) {
     .when('/start/:instid', {
         template: '',
         controller: 'StartController',
-        requireslogin: true
+        requiresLogin: true
     })
     .when('/process/:instid', {
         templateUrl: 't/process.html',
         controller: 'ProcessController',
-        requireslogin: true
+        requiresLogin: true
     })
     .when('/input/:instid', {
         templateUrl: 't/input.html',
         controller: 'InputController',
-        requireslogin: true
+        requiresLogin: true
     })
     .when('/import/:instid/:taskid', {
         templateUrl: 't/import.html',
         controller: 'ImportController',
-        requireslogin: true
+        requiresLogin: true
     })
     .when('/task/:instid/:taskid', {
         templateUrl: 't/task.html',
         controller: 'TaskController',
-        requireslogin: true
+        requiresLogin: true
     })
     /*
     .when('/:instid/upload', {

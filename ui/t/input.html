@@ -6,7 +6,7 @@
     <div class="page">
         <div class="form-group">
             <tabset>
-                <tab index="0" heading="Upload">
+                <tab heading="Upload">
                     <br>
                     <p>Please upload .nii files you'd like to process.</p>
                     <sca-wf-uploader instid="instance._id" taskid="appconf.upload_task_id" files="files"></sca-wf-uploader>
@@ -15,7 +15,7 @@
                         <button type="button" class="btn btn-primary" ng-click="doneupload(files)" ng-if="files.length > 0">Next</button>
                     </div>
                 </tab>
-                <tab index="1" heading="From URL">
+                <tab heading="From URL">
                     <br>
                     <form ng-submit="fromurl(url)">
                         <div class="form-group">
@@ -29,21 +29,36 @@
                         </div>
                     </form>
                 </tab>
-                <tab index="1" heading="From SDA">
+                <tab heading="From SDA">
                     <br>
-                    <form ng-submit="fromsda(path)">
-                        <div class="form-group">
-                            <label for="subject">URL</label>
-                            <input type="text" class="form-control" ng-model="path" placeholder="mysda/somedir/some.nifti" required>
-                            <p class="help-block">e.g. test/10142_3_MPRAGE_online.nii</p>
-                        </div>
-                        <div class="pull-right">
-                            <button type="button" class="btn" ng-click="back()">Back</button>
-                            <button type="submit" class="btn btn-primary">Next</button>
-                        </div>
-                    </form>
+                    <p class="alert alert-warning" ng-if="hpss_resources.length == 0">You don't have any HPSS resource registered</p>
+                    <div ng-if="hpss_resources.length > 0">
+                        <form ng-submit="fromsda()">
+                            <div class="form-group">
+                                <label for="subject">Account</label>
+                                <!--
+                                <ui-select ng-model="sda_config.resource" title="Choose SDA account">
+                                    <ui-select-match placeholder="Enter SDA account">{{$select.selected.name}}</ui-select-match>
+                                    <ui-select-choices repeat="resource in hpss_resourcesx">
+                                        {{resource.name}}
+                                    </ui-select-choices>
+                                </ui-select>
+                                -->
+                                <select class="form-control" ng-model="instance.config.sda.resource" ng-options="r.name for r in hpss_resources"></select>
+                            </div>
+                            <div class="form-group">
+                                <label for="subject">SDA Path</label>
+                                <input type="text" class="form-control" ng-model="instance.config.sda.path" placeholder="mysda/somedir/some.nifti" required>
+                                <p class="help-block">e.g. test/10142_3_MPRAGE_online.nii</p>
+                            </div>
+                            <div class="pull-right">
+                                <button type="button" class="btn" ng-click="back()">Back</button>
+                                <button type="submit" class="btn btn-primary" ng-disabled="!instance.config.sda.path">Next</button>
+                            </div>
+                        </form>
+                    </div>
                 </tab>
-                <tab index="1" heading="From DC2">
+                <tab heading="From DC2">
                     <br>
                     <form ng-submit="fromdc2(path)">
                         <p class="alert alert-warning">TODO</p>
@@ -57,7 +72,7 @@
                         </div>
                     </form>
                 </tab>
-                <tab index="1" heading="From SCA Workflow">
+                <tab heading="From SCA Workflow">
                     <br>
                     <form ng-submit="fromsca(instid, taskid)">
                         <p class="alert alert-warning">TODO</p>
