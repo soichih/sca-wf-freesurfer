@@ -59,8 +59,8 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
     }
 }]);
 
-app.controller('ImportController', ['$scope', 'toaster', '$http', 'jwtHelper', 'scaMessage', 'instance', '$routeParams', '$location', '$timeout', 
-function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, $location, $timeout) {
+app.controller('ImportController', ['$scope', 'toaster', '$http', 'jwtHelper', 'scaMessage', 'instance', '$routeParams', '$location', '$timeout', 'scaTask',
+function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, $location, $timeout, scaTask) {
     scaMessage.show(toaster);
     $scope.reset_urls($routeParams);
 
@@ -70,9 +70,17 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
 
     $scope.taskid = $routeParams.taskid;
 
+    $scope.task = scaTask.get($routeParams.taskid);
+
+    $scope.$watchCollection('task', function(task) {
+        if(task.status == "finished") $location.path("/process/"+$routeParams.instid);
+    });
+
+    /*
     $scope.$on('task_finished', function(event, task) {
         $location.path("/process/"+$routeParams.instid);
     });
+    */
     $scope.back = function() {
         $location.path("/input/"+$routeParams.instid);
     }
@@ -153,6 +161,7 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
             instance_id: $scope.instance._id,
             service_id: "sca-service-freesurfer",
             config: $scope.instance.config,
+            deps: [$scope.input_task._id],
         })
         .then(function(res) {
             $location.path("/task/"+$routeParams.instid+"/"+res.data.task._id);
@@ -284,19 +293,38 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
     }
 }]);
 
-app.controller('TaskController', ['$scope', 'toaster', '$http', 'jwtHelper', 'scaMessage', 'instance', '$routeParams', '$location',
-function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, $location) {
+app.controller('TaskController', ['$scope', 'toaster', '$http', 'jwtHelper', 'scaMessage', 'instance', '$routeParams', '$location', 'scaTask',
+function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, $location, scaTask) {
     scaMessage.show(toaster);
     $scope.reset_urls($routeParams);
-    /*
-    instance.load($routeParams.instid).then(function(_instance) { 
-        $scope.instance = _instance; 
-    });
-    */
+
     $scope.taskid = $routeParams.taskid;
     $scope.jwt = localStorage.getItem($scope.appconf.jwt_id);
+
+    $scope.task = scaTask.get($routeParams.taskid);
+
+    $scope.resource = null; //resource where this task is running/ran
+
+    $scope.$watchCollection('task', function(task) {
+       //also load resource info
+        if(task.resource_id && !$scope.resource) {
+            $scope.resource = {}; //prevent double loading while I wait response from /resource
+            $http.get($scope.appconf.sca_api+"/resource", {params: {
+                where: {_id: task.resource_id}
+            }})
+            .then(function(res) {
+                $scope.resource = res.data[0];
+                //console.dir($scope.resource);
+            }, function(res) {
+                if(res.data && res.data.message) toaster.error(res.data.message);
+                else toaster.error(res.statusText);
+            });
+        }
+    });
     
     $scope.back = function() {
         $location.path("/process/"+$routeParams.instid);
     }
 }]);
+
+
