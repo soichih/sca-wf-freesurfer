@@ -263,10 +263,9 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
                 auth: {
                     username: form.resource.config.username,
                     keytab: form.resource._id+".keytab",
-                    //username: "hayashis",
-                    //keytab: "5682f80ae8a834a636dee418.keytab",
                 }
             },
+            resource_deps: [form.resource._id], //need this to make sure the keytab exists
         })
         .then(function(res) {
             $location.path("/import/"+$routeParams.instid+"/"+res.data.task._id);
