@@ -59,11 +59,18 @@ app.config(['$routeProvider', 'appconf', function($routeProvider, appconf) {
         controller: 'ImportController',
         requiresLogin: true
     })
+
+    .when('/tasks/:instid', {
+        templateUrl: 't/tasks.html',
+        controller: 'TasksController',
+        requiresLogin: true
+    })
     .when('/task/:instid/:taskid', {
         templateUrl: 't/task.html',
         controller: 'TaskController',
         requiresLogin: true
     })
+
     /*
     .when('/:instid/upload', {
         templateUrl: 't/upload.html',

@@ -29,6 +29,7 @@ angular.module('app.config', [])
         */
         {id: "process", label: "Freesurfer", url: "tdb" },
         {id: "input", label: "Add Input", url: "tdb" },
+        {id: "tasks", label: "Tasks", url: "tdb" },
     ]
     /*
     menu: [
