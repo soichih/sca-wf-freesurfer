@@ -91,14 +91,13 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
     scaMessage.show(toaster);
     $scope.reset_urls($routeParams);
 
-    /*
-    $scope.form = {
-        process: "recon", 
-    }
-    */
-
     instance.load($routeParams.instid).then(function(_instance) { 
         $scope.instance = _instance; 
+
+        //set default parameters (TODO - not sure if this is the right place to do this)
+        if(!$scope.instance.config) $scope.instance.config = {
+            process: "recon"
+        }
     });
 
     //find the latest successful nifti data products
@@ -143,9 +142,20 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
         else toaster.error(res.statusText);
     });
 
+    //make sure user has place to submit sca-service-freesurfer
+    $http.get($scope.appconf.sca_api+"/resource/best", {params: {
+        service_id: "sca-service-freesurfer",
+    }}).then(function(res) {
+        $scope.best = res.data;
+    }, function(res) {
+        if(res.data && res.data.message) toaster.error(res.data.message);
+        else toaster.error(res.statusText);
+    });
+
     $scope.open = function(task) {
         $location.path("/task/"+$routeParams.instid+"/"+task._id);
     }
+
     $scope.submit = function() {
         $scope.instance.config.input_task_id = $scope.input_task._id;
         
@@ -179,6 +189,7 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
     $scope.editheader = function() {
         $scope.editingheader = true;
     }
+
     $scope.updateheader = function() {
         instance.save($scope.instance).then(function(_instance) { 
             $scope.editingheader = false;

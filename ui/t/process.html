@@ -28,6 +28,7 @@
     -->
 
     <div class="page">
+        <p class="alert alert-warning" ng-if="!best.resource">No resource is available to submit Freesurfer service. Please check your resource status.</p>
         <form name="recon" ng-submit="submit()" class="form-horizontal">
             <div class="form-group">
                 <label class="col-sm-2 control-label">Input Nifti Files</label>
