@@ -100,7 +100,7 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
             status: "finished",
         },
         //find the latest one
-        sort: "-update_date",
+        sort: "-finish_date",
         limit: 1,
     }})
     .then(function(res) {
