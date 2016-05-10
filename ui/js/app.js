@@ -267,6 +267,7 @@ app.directive('confirmOnExit', function() {
     };
 });
 
+//not used anymore?
 app.directive('uiSelectRequired', function() {
   return {
     require: 'ngModel',

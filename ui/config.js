@@ -1,7 +1,5 @@
 angular.module('app.config', [])
 .constant('appconf', {
-    //api: '/api/sca-wf-freesurfer',
-
     //shared servive api and ui urls (for menus and stuff)
     shared_api: '/api/shared',
     shared_url: '/shared',
@@ -11,9 +9,6 @@ angular.module('app.config', [])
     auth_url: '/auth',
 
     sca_api: '/api/sca',
-    //sca_url: '/sca',
-
-    //upload_api: '/api/upload',
 
     progress_api: '/api/progress',
     progress_url: '/progress',
@@ -22,33 +17,10 @@ angular.module('app.config', [])
     upload_task_id: '_upload',
 
     breads: [
-        //{id: "workflows", label: "Workflows", url:"/sca/#/workflows" },
-        /*
-        {id: "start", label: "Start", url: "#/:instid/start" },
-        {id: "upload", label: "Upload / Import", url: "#/:instid/upload" },
-        */
-        {id: "process", label: "Freesurfer", url: "tdb" },
-        {id: "input", label: "Add Input", url: "tdb" },
-        {id: "tasks", label: "Tasks", url: "tdb" },
+        {id: "workflows", label: "Workflows", url:"/sca/#/workflows" },
+        {id: "process", label: "Freesurfer"},
+        {id: "input", label: "Add Input"},
+        {id: "tasks", label: "Tasks"},
     ]
-    /*
-    menu: [
-        {
-            id: "start",
-            label: "Start",
-            url: "#/start", //TODO need to set instid..
-        },
-        {
-            id: "upload",
-            label: "Upload / Import",
-            url: "#/upload", //TODO need to set instid..
-         },
-        {
-            id: "recon",
-            label: "Recon",
-            url: "#/recon", //TODO need to set instid..
-         },
-    ]
-    */
 });
 

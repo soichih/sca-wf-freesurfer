@@ -11,7 +11,7 @@ function($scope, appconf, $route, toaster, $http, jwtHelper, menu, $window, $anc
     //this is a crap..
     $scope.reset_urls = function($routeParams) {
         appconf.breads.forEach(function(item) {
-            item.url = "#/"+item.id+"/"+$routeParams.instid;
+            if(!item.url) item.url = "#/"+item.id+"/"+$routeParams.instid;
         });
     }
 }]);
@@ -40,24 +40,20 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
     //console.log("going to /process");
 }]);
 
+/*
 app.controller('UploadController', ['$scope', 'toaster', '$http', 'jwtHelper', 'scaMessage', 'instance', '$routeParams', '$location', 
 function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, $location) {
     scaMessage.show(toaster);
     $scope.reset_urls($routeParams);
 
     $scope.back = function() { $location.path("/start/"+$routeParams.instid); }
-    /*
-    $scope.$on("file_uploaded", function() {
-        console.log("file_uploaded");
-        $scope.changed = true;
-    });
-    */
     
     $scope.next = function() {
         if($scope.changed)  $location.path("/import");
         else $location.path("/process");
     }
 }]);
+*/
 
 app.controller('ImportController', ['$scope', 'toaster', '$http', 'jwtHelper', 'scaMessage', 'instance', '$routeParams', '$location', '$timeout', 'scaTask',
 function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, $location, $timeout, scaTask) {
@@ -76,11 +72,6 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
         if(task.status == "finished") $location.path("/process/"+$routeParams.instid);
     });
 
-    /*
-    $scope.$on('task_finished', function(event, task) {
-        $location.path("/process/"+$routeParams.instid);
-    });
-    */
     $scope.back = function() {
         $location.path("/input/"+$routeParams.instid);
     }
@@ -317,6 +308,7 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
 
     $scope.resource = null; //resource where this task is running/ran
 
+    //need to keep watching until resource get set
     $scope.$watchCollection('task', function(task) {
        //also load resource info
         if(task.resource_id && !$scope.resource) {
