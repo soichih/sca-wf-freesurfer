@@ -124,7 +124,7 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
         //find one with nifti output
         where: {
             instance_id: $routeParams.instid,
-            service_id: "sca-service-freesurfer",
+            service: "sca-service-freesurfer",
         }
     }})
     .then(function(res) {
@@ -137,7 +137,7 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
 
     //make sure user has place to submit sca-service-freesurfer (if not.. alert user!)
     $http.get($scope.appconf.sca_api+"/resource/best", {params: {
-        service_id: "sca-service-freesurfer",
+        service: "soichih/sca-service-freesurfer",
     }}).then(function(res) {
         $scope.best = res.data;
     }, function(res) {
@@ -162,7 +162,7 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
         //submit freesurfer
         $http.post($scope.appconf.sca_api+"/task", {
             instance_id: $scope.instance._id,
-            service_id: "sca-service-freesurfer",
+            service: "soichih/sca-service-freesurfer",
             config: $scope.instance.config,
             deps: [$scope.input_task._id],
         })
@@ -226,7 +226,7 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
         //first submit download service
         $http.post($scope.appconf.sca_api+"/task", {
             instance_id: $scope.instance._id,
-            service_id: "sca-product-raw", 
+            service: "soichih/sca-product-raw", 
             config: { 
                 download: [{dir:"download", url:url}],
             }
@@ -237,7 +237,7 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
             //then submit import with curl service as dependency
             $http.post($scope.appconf.sca_api+"/task", {
                 instance_id: $scope.instance._id,
-                service_id: "sca-product-nifti", //invoke product-nifti's importer
+                service: "soichih/sca-product-nifti", //invoke product-nifti's importer
                 config: { 
                     source_dir: curl_task._id+"/download" //import source
                 },
@@ -261,7 +261,7 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
         var form = $scope.instance.config.sda;
         $http.post($scope.appconf.sca_api+"/task", {
             instance_id: $scope.instance._id,
-            service_id: "sca-service-hpss",
+            service: "soichih/sca-service-hpss",
             config: {
                 get: [{localdir:"download", hpsspath:form.path}],
                 auth: {
@@ -282,7 +282,7 @@ function($scope, toaster, $http, jwtHelper, scaMessage, instance, $routeParams, 
     $scope.doneupload = function() {
         $http.post($scope.appconf.sca_api+"/task", {
             instance_id: $scope.instance._id,
-            service_id: "sca-product-nifti", //invoke product-nifti's importer
+            service: "soichih/sca-product-nifti", //invoke product-nifti's importer
             config: { 
                 source_dir: $scope.appconf.upload_task_id,
             }
@@ -343,7 +343,7 @@ function($scope, menu,  scaMessage, toaster, jwtHelper, $http, $location, $route
     $http.get($scope.appconf.sca_api+"/task", {params: {
         where: {
             instance_id: $routeParams.instid,
-            service_id: "sca-service-freesurfer",
+            service: "soichih/sca-service-freesurfer",
         }
     }})
     .then(function(res) {
