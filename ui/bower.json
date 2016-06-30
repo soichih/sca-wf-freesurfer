@@ -33,7 +33,7 @@
     "angular-datatables": "^0.5.3",
     "sca-product-raw": "soichih/sca-product-raw",
     "sca-product-nifti": "soichih/sca-product-nifti",
-    "sca-wf": "soichih/sca-wf",
+    "sca-ng-wf": "soichih/sca-ng-wf",
     "ng-file-upload": "^12.0.4",
     "ui-select": "angular-ui-select#^0.16.1"
   }

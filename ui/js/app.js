@@ -12,7 +12,7 @@ var app = angular.module('app', [
     'ui.bootstrap.tabs',
     'ui.select',
     'sca-shared',
-    'sca-wf',
+    'sca-ng-wf',
     'ui.gravatar',
     'angular.filter',
     'sca-product-raw',
